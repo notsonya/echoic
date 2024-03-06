@@ -35,16 +35,19 @@
       height: 100vh;
     }
 
-    #startButton,
-    #audioButton {
-      margin: 10px;
-      padding: 5px 10px;
+    button {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
       font-size: 16px;
       cursor: pointer;
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
-  <script src="https://unpkg.com/face-api.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js/dist/face-api.js"></script>
   <script>
     let sketch = function (p) {
       const size = 10;
@@ -96,39 +99,30 @@
     };
 
     window.onload = async function () {
-      let audioContext;
-      let analyser;
-      let audioBtnText;
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      const canvas = document.createElement("canvas");
+      document.body.appendChild(canvas);
+      const canvasCtx = canvas.getContext("2d");
 
-      const startAudio = () => {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-
-        // ... Rest of your audio setup code ...
-
-        visualize(); // Call visualize function after initializing audio
-      };
-
-      const startButton = document.getElementById("startButton");
-      startButton.addEventListener("click", startAudio);
-
-      const audioButton = document.getElementById("audioButton");
-      audioButton.addEventListener("click", () => {
-        audioContext.resume();
-        audioBtnText.innerText = "Audio Enabled";
-      });
-
-      audioBtnText = document.getElementById("audioBtnText");
+      let waves = []; // Declare waves globally
 
       // Load the face-api.js models from CDN
-      await faceapi.nets.tinyFaceDetector.loadFromUri("https://cdn.jsdelivr.net/npm/face-api.js/models");
-      await faceapi.nets.faceLandmark68Net.loadFromUri("https://cdn.jsdelivr.net/npm/face-api.js/models");
-      await faceapi.nets.faceRecognitionNet.loadFromUri("https://cdn.jsdelivr.net/npm/face-api.js/models");
+      await Promise.all([
+        faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+        faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+        faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+      ]);
 
       const video = document.createElement("video");
       document.body.appendChild(video);
       const displaySize = { width: window.innerWidth / 2, height: window.innerHeight / 2 };
       faceapi.matchDimensions(video, displaySize);
+
+      const startAudioButton = document.createElement("button");
+      startAudioButton.textContent = "Start Audio";
+      startAudioButton.onclick = startAudio;
+      document.body.appendChild(startAudioButton);
 
       navigator.mediaDevices
         .getUserMedia({ video: {} })
@@ -137,21 +131,20 @@
           return video.play();
         })
         .then(() => {
-          visualize();
+          // visualize();  // Commented out to start audio only on button click
         })
         .catch((err) => {
           console.error("Error accessing camera:", err);
         });
 
+      function startAudio() {
+        visualize();
+      }
+
       function visualize() {
         analyser.fftSize = 256;
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
-
-        const canvas = document.createElement("canvas");
-        document.body.appendChild(canvas);
-        const canvasCtx = canvas.getContext("2d");
-        const waves = [];
 
         canvas.width = window.innerWidth / 2;
         canvas.height = window.innerHeight / 2;
@@ -231,9 +224,5 @@
     };
   </script>
 </head>
-<body>
-  <button id="startButton">Start</button>
-  <button id="audioButton">Enable Audio</button>
-  <p id="audioBtnText">Click to enable audio</p>
-</body>
+<body></body>
 </html>
