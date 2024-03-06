@@ -47,31 +47,38 @@
       const rows = height / size;
       const symbols = [" ", ".", "!", "*", "#", "0"];
       let video;
+      let faceDetected = false; // Flag to check if a face is detected
 
       p.setup = function () {
         p.createCanvas(width, height);
-        video = p.createCapture(p.VIDEO);
+        video = p.createCapture(p.VIDEO, faceDetectionReady);
         video.size(width, height);
         video.hide();
       };
+
+      function faceDetectionReady() {
+        faceDetected = true;
+      }
 
       p.draw = function () {
         p.background(21, 2, 150);
         video.loadPixels();
 
-        for (let i = 0; i < cols; i++) {
-          for (let j = 0; j < rows; j++) {
-            let index = (j * size * width + i * size) * 4;
-            let r = video.pixels[index];
-            let g = video.pixels[index + 1];
-            let b = video.pixels[index + 2];
-            let average = (r + g + b) / 3;
-            let symbolIndex = Math.floor(p.map(average, 0, 255, 0, symbols.length - 1));
-            let gradientColor = p.color(p.map(i, 0, cols - 1, 255, 0), 255, 255);
+        if (faceDetected) {
+          for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+              let index = (j * size * width + i * size) * 4;
+              let r = video.pixels[index];
+              let g = video.pixels[index + 1];
+              let b = video.pixels[index + 2];
+              let average = (r + g + b) / 3;
+              let symbolIndex = Math.floor(p.map(average, 0, 255, 0, symbols.length - 1));
+              let gradientColor = p.color(p.map(i, 0, cols - 1, 255, 0), 255, 255);
 
-            p.textAlign(p.RIGHT, p.CENTER);
-            p.fill(gradientColor);
-            p.text(symbols[symbolIndex], (cols - i - 1) * size, j * size);
+              p.textAlign(p.RIGHT, p.CENTER);
+              p.fill(gradientColor);
+              p.text(symbols[symbolIndex], (cols - i - 1) * size, j * size);
+            }
           }
         }
       };
