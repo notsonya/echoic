@@ -34,9 +34,16 @@
       width: 100vw;
       height: 100vh;
     }
+
+    #startButton,
+    #audioButton {
+      margin: 10px;
+      padding: 5px 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
   <script src="https://unpkg.com/face-api.js"></script>
   <script>
     let sketch = function (p) {
@@ -89,12 +96,29 @@
     };
 
     window.onload = async function () {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const analyser = audioContext.createAnalyser();
-      const canvas = document.createElement("canvas");
-      document.body.appendChild(canvas);
-      const canvasCtx = canvas.getContext("2d");
-      const waves = [];
+      let audioContext;
+      let analyser;
+      let audioBtnText;
+
+      const startAudio = () => {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+
+        // ... Rest of your audio setup code ...
+
+        visualize(); // Call visualize function after initializing audio
+      };
+
+      const startButton = document.getElementById("startButton");
+      startButton.addEventListener("click", startAudio);
+
+      const audioButton = document.getElementById("audioButton");
+      audioButton.addEventListener("click", () => {
+        audioContext.resume();
+        audioBtnText.innerText = "Audio Enabled";
+      });
+
+      audioBtnText = document.getElementById("audioBtnText");
 
       // Load the face-api.js models from CDN
       await faceapi.nets.tinyFaceDetector.loadFromUri("https://cdn.jsdelivr.net/npm/face-api.js/models");
@@ -123,6 +147,11 @@
         analyser.fftSize = 256;
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
+
+        const canvas = document.createElement("canvas");
+        document.body.appendChild(canvas);
+        const canvasCtx = canvas.getContext("2d");
+        const waves = [];
 
         canvas.width = window.innerWidth / 2;
         canvas.height = window.innerHeight / 2;
@@ -202,5 +231,9 @@
     };
   </script>
 </head>
-<body></body>
+<body>
+  <button id="startButton">Start</button>
+  <button id="audioButton">Enable Audio</button>
+  <p id="audioBtnText">Click to enable audio</p>
+</body>
 </html>
