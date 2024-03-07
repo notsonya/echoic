@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,7 +13,8 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background-color: #ffffff; /* Change background color to white */
+      background-color: #ffffff;
+      /* Change background color to white */
     }
 
     canvas,
@@ -25,15 +27,29 @@
     }
 
     #audio-visualizer {
-      width: 100vw; /* Full screen width */
-      height: 100vh; /* Full screen height */
-      z-index: 1; /* Place audio visualizer above video visualizer */
-      background-color: magenta; /* Change background color to magenta */
+      width: 100vw;
+      /* Full screen width */
+      height: 100vh;
+      /* Full screen height */
+      z-index: 1;
+      /* Place audio visualizer above video visualizer */
+      background-color: magenta;
+      /* Change background color to magenta */
     }
 
     #video-visualizer {
-      width: 100vw; /* Full screen width */
-      height: 100vh; /* Full screen height */
+      width: 100vw;
+      /* Full screen width */
+      height: 100vh;
+      /* Full screen height */
+    }
+
+    #gif-container {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: 2;
+      /* Place the GIF above everything else */
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
@@ -158,8 +174,8 @@
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
 
-        canvas.width = window.innerWidth ; // Full screen width
-        canvas.height = window.innerHeight ; // Full screen height
+        canvas.width = window.innerWidth; // Full screen width
+        canvas.height = window.innerHeight; // Full screen height
 
         createWaves(bufferLength);
 
@@ -192,6 +208,12 @@
     };
   </script>
 </head>
-<body></body>
+
+<body>
+  <div id="gif-container">
+    <img src="https://raw.githubusercontent.com/notsonya/echoic/7f60455af86caa8efaea30d69c3fa4eda6332211/echoic.gif" alt="echoic gif" />
+  </div>
+</body>
+
 </html>
 
