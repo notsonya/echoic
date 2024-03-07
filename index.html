@@ -44,7 +44,7 @@
       /* Full screen height */
     }
 
-    #gif-container {
+#gif-container {
       position: absolute;
       bottom: 0;
       right: 0;
@@ -53,16 +53,20 @@
     }
 
     #gif-container img {
-      animation: rotate 1s infinite; /* Adjust the duration (5s) for a faster or slower animation */
+      animation: translate 2s linear infinite; /* Adjust the duration (2s) for a faster or slower animation */
     }
 
-    @keyframes rotate {
-      from {
-        transform: rotate(0deg);
+    @keyframes translate {
+      0% {
+        transform: translate(0, 0);
       }
 
-      to {
-        transform: rotate(360deg);
+      50% {
+        transform: translate(50px, 50px);
+      }
+
+      100% {
+        transform: translate(0, 0);
       }
     }
   </style>
