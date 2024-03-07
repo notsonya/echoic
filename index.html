@@ -44,7 +44,7 @@
       /* Full screen height */
     }
 
-#gif-container {
+    #gif-container {
       position: absolute;
       bottom: 0;
       right: 0;
@@ -53,21 +53,7 @@
     }
 
     #gif-container img {
-      animation: translate 1s linear infinite; /* Adjust the duration (2s) for a faster or slower animation */
-    }
-
-    @keyframes translate {
-      0% {
-        transform: translate(0, 0);
-      }
-
-      50% {
-        transform: translate(50px, 50px);
-      }
-
-      100% {
-        transform: translate(0, 0);
-      }
+      width: 100%; /* Make sure the GIF fills its container */
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
@@ -233,6 +219,7 @@
   </div>
 </body>
 
+</html>
 </html>
 
 
